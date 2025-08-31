@@ -1,0 +1,80 @@
+name: Test Claude Code System─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ >                                                                                                                                                                                                                                         │
+  on:───────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+    workflow_dispatch:shift+tab to cycle)
+      inputs:
+        task:
+          description: '测试任务'
+          required: true
+          default: '创建一个复杂的多文件 Python 项目，包含类、方法、异常处理，编写完整的单元测试，生成详细的文档'
+
+  jobs:
+    test-claude:
+      runs-on: ubuntu-latest
+
+      steps:
+        - name: 检查配置
+          env:
+            ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+            GMAIL_USER: ${{ secrets.GMAIL_USER }}
+            GMAIL_PASS: ${{ secrets.GMAIL_PASS }}
+          run: |
+            echo "🔍 检查配置..."
+            if [ -z "$ANTHROPIC_API_KEY" ]; then
+              echo "❌ ANTHROPIC_API_KEY 未配置"
+              exit 1
+            fi
+            if [ -z "$GMAIL_USER" ]; then
+              echo "❌ GMAIL_USER 未配置"
+              exit 1
+            fi
+            if [ -z "$GMAIL_PASS" ]; then
+              echo "❌ GMAIL_PASS 未配置"
+              exit 1
+            fi
+            echo "✅ 所有配置检查通过"
+
+        - name: 安装 Claude Code
+          run: |
+            echo "📦 安装 Claude Code..."
+            npm install -g @anthropics/claude-code
+            claude-code --version
+
+        - name: 执行 Claude Code
+          env:
+            ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          run: |
+            echo "🚀 开始执行 Claude Code..."
+            echo "任务: ${{ github.event.inputs.task }}"
+
+            mkdir -p test-workspace
+            cd test-workspace
+
+            claude-code \
+              --dangerously-skip-permissions \
+              --model claude-opus-4-1-20250805 \
+              --max-turns 50 \
+              --task "${{ github.event.inputs.task }}" \
+              --verbose
+
+        - name: 发送成功邮件
+          if: success()
+          run: |
+            npm install nodemailer
+            node -e "
+            const nodemailer = require('nodemailer');
+            const transporter = nodemailer.createTransporter({
+              host: 'smtp.qq.com',
+              port: 587,
+              auth: {
+                user: '${{ secrets.SMTP_USER }}',
+                pass: '${{ secrets.SMTP_PASS }}'
+              }
+            });
+            transporter.sendMail({
+              from: '${{ secrets.SMTP_USER }}',
+              to: 'czus@qq.com',
+              subject: '🎉 Claude Code 测试成功！',
+              html: '<h2>系统测试成功！</h2><p>✅ Opus 4.1 模型</p><p>✅ 50轮对话</p><p>✅ 最大权限模式</p><p>您的 Claude Code 邮件系统已正常工作！</p>'
+            }).then(() => console.log('邮件发送成功'));
+            "
