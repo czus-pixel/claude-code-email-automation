@@ -1,0 +1,41 @@
+{
+  "email": {
+    "imap": {
+      "host": "imap.gmail.com",
+      "port": 993,
+      "secure": true,
+      "checkInterval": 5
+    },
+    "smtp": {
+      "host": "smtp.gmail.com",
+      "port": 587,
+      "secure": false
+    },
+    "templates": {
+      "successTemplate": "templates/success-report.html",
+      "errorTemplate": "templates/error-report.html"
+    }
+  },
+  "claude": {
+    "defaultTimeout": 1800000,
+    "maxRetries": 3,
+    "supportedTaskTypes": [
+      "code",
+      "debug", 
+      "test",
+      "deploy"
+    ],
+    "defaultMode": "code",
+    "outputFormat": "json"
+  },
+  "github": {
+    "workflowTimeout": 30,
+    "artifactRetentionDays": 30,
+    "maxConcurrentJobs": 3
+  },
+  "logging": {
+    "level": "info",
+    "maxLogFiles": 10,
+    "maxLogSize": "10MB"
+  }
+}

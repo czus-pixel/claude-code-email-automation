@@ -1,0 +1,39 @@
+{
+  "name": "claude-code-email-automation",
+  "version": "1.0.0",
+  "description": "通过邮件控制 Claude Code 执行任务的自动化系统",
+  "main": "scripts/claude-runner.js",
+  "scripts": {
+    "start": "node scripts/claude-runner.js",
+    "check-email": "node scripts/email-checker.js",
+    "test": "node scripts/test-runner.js"
+  },
+  "dependencies": {
+    "imap": "^0.8.19",
+    "nodemailer": "^6.9.8",
+    "mailparser": "^3.6.5",
+    "@anthropics/claude-code": "latest",
+    "fs-extra": "^11.2.0",
+    "path": "^0.12.7",
+    "moment": "^2.30.1",
+    "mustache": "^4.2.0",
+    "dotenv": "^16.3.1"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/claude-code-email-automation.git"
+  },
+  "keywords": [
+    "claude-code",
+    "automation",
+    "email",
+    "github-actions",
+    "ai",
+    "remote-control"
+  ],
+  "author": "Your Name",
+  "license": "MIT"
+}
